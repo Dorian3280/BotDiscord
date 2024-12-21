@@ -1,0 +1,7 @@
+__pycache__/
+config*
+script*
+env/
+database/
+todo/
+test*
