@@ -16,10 +16,10 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         self.manager = Manager(f"{self.bot.path}/database", bot.config)
 
         self.categories = [
-            # "athletics",
+            "athletics",
             "rubiks",
-            # "swimming",
-            # "speedrun"
+            "swimming",
+            "speedrun"
         ]
 
         # Create commands for each categories
@@ -60,13 +60,20 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         }
 
         if not any(new_wr.values()):
-            print('No new world record')
             return 'No new world record'
         
         new_wr = {k: v for k, v in new_wr.items() if v is not None}
 
         for wr in chain(*new_wr.values()):
             return self.manager.format_new_wr(wr)
+
+
+    def check_options(command_name, *option):
+        match command_name:
+            case 'show':
+                if option[0] not in ['byName', 'byDate'] and option[1] not in ['asc', 'desc']:
+                    return 
+    
 
     async def send_response(self, ctx: Context, response, category, file=False):
         if len(response) < 2000 and not file:
@@ -79,7 +86,9 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         name="show",
         description="Show database",
     )
-    async def show(self, ctx: Context) -> None:
+    async def show(self, ctx) -> None:
+        # options = self.check_options()
+        # print(options)
         data = self.manager.get_all(self.categories)
         await ctx.send(file=File(io.StringIO(data), self.bot.config["show_database_filename"]))
 

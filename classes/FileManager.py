@@ -1,6 +1,4 @@
 import os
-import shutil
-
 
 class FileManager:
     def __init__(self, url: str):

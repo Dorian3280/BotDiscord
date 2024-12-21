@@ -6,7 +6,9 @@ from selectolax.parser import HTMLParser
 from classes.StringProcessor import format_long_str, format_str
 
 
-def extract_swimming_wr(parser: HTMLParser) -> str:
+def extract_swimming_wr(**kwargs) -> str:
+    
+    parser: HTMLParser = kwargs['parser']
 
     data = ''
     

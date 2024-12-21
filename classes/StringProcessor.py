@@ -5,22 +5,19 @@ def format_str(text: str):
     return text.strip().replace(',', ' ')
 
 def format_long_str(text: str):
-    return text.strip().replace(',', ' ').replace('×', 'x')
+    return text\
+        .replace(',', ' ')\
+        .replace('×', 'x')\
+        .replace('[ b ]', '')\
+        .strip()\
 
-def from_csv_to_table(file_txt: str, category: str, header: str):
-    categories, header = header.strip().split('\n')
-    categories = categories[3:].split(',')
-    header = header.split(',')
-
-    body = map(lambda row: row.split(','), file_txt.splitlines())
-    body = map(list, (group for key, group in groupby(body, lambda x: "--" in x) if not key))
-    body = {category: block for category, block in zip(categories, body)}
+def from_csv_to_table(body: dict, category: str, header):
 
     tables = []
     
     for k, v in body.items():
         tables.append(table2ascii(
-            header=["", f"{k} • {category.title()}"] + [Merge.LEFT] * (len(header) - 2),
+            header=[f"{k} • {category.title()}"] + [Merge.LEFT] * (len(header) - 1),
             body=v,
             first_col_heading=True,
             style=PresetStyle.thin

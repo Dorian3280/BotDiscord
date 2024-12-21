@@ -6,8 +6,10 @@ from selectolax.parser import HTMLParser
 from classes.StringProcessor import format_long_str, format_str
 
 
-def extract_athletics_wr(parser: HTMLParser) -> str:
+def extract_athletics_wr(**kwargs) -> str:
 
+    parser: HTMLParser = kwargs['parser']
+    
     data = ''
 
     for gender in ['Men', 'Women']:
@@ -19,7 +21,6 @@ def extract_athletics_wr(parser: HTMLParser) -> str:
             
             # Discipline
             discipline = format_long_str(tds[0].text(separator=" "))
-            discipline = discipline.replace('[ b ]', '').strip()
             discipline = re.sub(r'\s+', ' ', discipline)
             
             # Time
