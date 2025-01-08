@@ -3,6 +3,7 @@ from scraping.rubiks import extract_rubiks_wr
 from scraping.swimming import extract_swimming_wr
 from scraping.speedrun import extract_speedrun_wr
 
+
 DATA = {
     'athletics': {
                   "script": extract_athletics_wr,
@@ -60,6 +61,10 @@ DATA = {
                             "leaderboard": '/fr-FR/portal?h=Glitchless-PC&x=wk6pexd1-kn0mz7ol.jq6nxjnl',
                             "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IndrNnBleGQxIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6IjRwZDBuMzFlIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjAsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiJrbjBtejdvbCIsInZhbHVlSWRzIjpbImpxNm54am5sIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzM0NzY4MjA1fQ"
                         },
+                        'Get To Work': {
+                            "leaderboard": '/fr-FR/Get_to_Work?h=glitchless&x=5dww54gd',
+                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IjVkd3c1NGdkIiwiZW11bGF0b3IiOjEsImdhbWVJZCI6ImoxbjRyMHk2Iiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOltdLCJ2aWRlbyI6MH0sInBhZ2UiOjEsInZhcnkiOjE3MzYyODk2MzZ9"
+                        },
                     }
-    },
+    }
 }

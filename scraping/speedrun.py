@@ -1,9 +1,8 @@
-import os
 from datetime import datetime
 from requests import Session
 from selectolax.parser import HTMLParser
 
-from classes.StringProcessor import format_long_str, format_str
+from classes.StringProcessor import format_str
 from classes.UrlManager import url_request
 
 

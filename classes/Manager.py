@@ -8,6 +8,7 @@ from classes.StringProcessor import from_csv_to_table
 
 from medias.emoji_flags import emoji_flags
 
+
 class Manager:
     def __init__(self, datablase_url, config):
         self.session = Session()
@@ -38,11 +39,11 @@ class Manager:
         
         return header, body
 
+
     def sorting_by(data, sorting):
         match sorting:
             case 'name':
                 ...
-                
         
 
     def get_url(self, category: str):

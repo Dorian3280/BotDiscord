@@ -1,5 +1,3 @@
-import re
-import os
 from datetime import datetime
 from selectolax.parser import HTMLParser
 

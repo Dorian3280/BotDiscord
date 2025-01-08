@@ -23,7 +23,7 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         ]
 
         # Create commands for each categories
-        # Get WR, get URL
+        # Get WR, Get URL
         for category in self.categories:
 
             description = ""
@@ -53,6 +53,7 @@ class WorldRecords(commands.Cog, name="worldrecords"):
 
         self.checking.start()
 
+
     def check_wr(self) -> str:
         new_wr = {
             category: self.manager.execute_one(category)
@@ -68,11 +69,14 @@ class WorldRecords(commands.Cog, name="worldrecords"):
             return self.manager.format_new_wr(wr)
 
 
-    def check_options(command_name, *option):
+    def check_options(command_name, *options):
         match command_name:
             case 'show':
-                if option[0] not in ['byName', 'byDate'] and option[1] not in ['asc', 'desc']:
-                    return 
+                if options[0] in ['byDate']:
+                    order = options[1] if options[1] in ['asc', 'desc'] else 'asc'
+                    return options[0], order
+        
+        return False
     
 
     async def send_response(self, ctx: Context, response, category, file=False):
@@ -86,9 +90,7 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         name="show",
         description="Show database",
     )
-    async def show(self, ctx) -> None:
-        # options = self.check_options()
-        # print(options)
+    async def show(self, ctx: Context) -> None:
         data = self.manager.get_all(self.categories)
         await ctx.send(file=File(io.StringIO(data), self.bot.config["show_database_filename"]))
 
@@ -102,16 +104,6 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         await ctx.send(response)
 
 
-    @commands.hybrid_command(
-        name="time_left",
-        description="Get time remaining before the check",
-    )
-    async def time_left(self, ctx: Context) -> None:
-        response = self.check_wr()
-        await ctx.send(response)
-
-    
-    # @tasks.loop(minutes=1)
     @tasks.loop(time=datetime.time(hour=12, tzinfo=ZoneInfo("Europe/Paris")))
     async def checking(self) -> None:
         response = self.check_wr()
@@ -122,6 +114,7 @@ class WorldRecords(commands.Cog, name="worldrecords"):
     async def before_check(self):
         """Attend que le bot soit prêt avant de démarrer."""
         await self.bot.wait_until_ready()
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(WorldRecords(bot))

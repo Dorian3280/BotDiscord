@@ -1,6 +1,5 @@
-import os
-from datetime import datetime
 import re
+from datetime import datetime
 from selectolax.parser import HTMLParser
 
 from classes.StringProcessor import format_long_str, format_str
@@ -41,6 +40,5 @@ def extract_athletics_wr(**kwargs) -> str:
         
         data += '--\n'
         
-    
     return data
     

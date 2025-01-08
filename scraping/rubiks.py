@@ -1,4 +1,3 @@
-import os
 import re
 from datetime import datetime
 from selectolax.parser import HTMLParser
@@ -6,14 +5,14 @@ from selectolax.parser import HTMLParser
 from classes.StringProcessor import format_long_str, format_str
 from classes.UrlManager import url_request
 
-regex = re.compile(r'^(\w+)\.?\s(\d+)(?:\s-\s(?:\w+\.?\s)?\d+)?,\s(\d+)$')
+regex = re.compile(r'(\d{4})\s\((\d+)(?:-\d+)?\s(\w+)\)?', re.I)
 
 def extract_rubiks_wr(**kwargs) -> str:
     
     parser: HTMLParser = kwargs['parser']
     
     trs = parser.css('table tbody tr')[1:-1]
-    del trs[14:19]
+    del trs[14:22]
     
     data = []
     
@@ -31,11 +30,14 @@ def extract_rubiks_wr(**kwargs) -> str:
         country = tds[3-modifier].css_first("a:has(img)").attrs["title"]
         
         # Date
-        url_date = tds[-1].css_first('a').attrs['href']
-        parser_2 = url_request(kwargs['session'], url_date)
-        date = parser_2.css_first('div.competition-info dd:first-of-type').text().strip()
-        date = re.sub(regex, r'\2 \1 \3', date)
-        date = datetime.strptime(date, "%d %b %Y").strftime("%d %B %Y")
+        date = format_str(tds[4-modifier].text())
+        date = re.search(regex, date)
+        
+        if date:
+            date = f"{date.group(2)} {date.group(3)} {date.group(1)}"
+            date = datetime.strptime(date, "%d %B %Y").strftime("%d %b %Y")
+        else:
+            date = '-'
         
         data.append(f'{discipline},{time},{player},{country},{date}\n')
         

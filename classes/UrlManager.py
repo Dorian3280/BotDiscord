@@ -1,6 +1,6 @@
-import json
 from requests import Session
 from selectolax.parser import HTMLParser
+
 
 def url_request(session: Session, url: str, json=False):
     print(f'... Requesting')
