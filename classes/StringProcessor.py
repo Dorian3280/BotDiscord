@@ -1,5 +1,4 @@
 from table2ascii import table2ascii, PresetStyle, Merge
-from itertools import groupby
 
 
 def format_str(text: str):
@@ -12,6 +11,10 @@ def format_long_str(text: str):
         .replace('×', 'x')\
         .replace('[ b ]', '')\
         .strip()\
+
+
+def from_csv_to_set(csv: str):
+    return set(csv.strip().split('\n'))
 
 
 def from_csv_to_table(body: dict, category: str, header):

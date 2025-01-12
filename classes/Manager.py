@@ -21,9 +21,6 @@ class Manager:
         
         data = self.file_manager.read(filename)
         header, body = self.format_data(data, DATA[category]['header'])
-        
-        if sorting:
-            body = self.sorting_by(body)
 
         return from_csv_to_table(body, category, header)
 
@@ -38,12 +35,6 @@ class Manager:
         body = {category: block for category, block in zip(categories, body)}
         
         return header, body
-
-
-    def sorting_by(data, sorting):
-        match sorting:
-            case 'name':
-                ...
         
 
     def get_url(self, category: str):
@@ -64,6 +55,8 @@ class Manager:
         else:
             parser = url_request(self.session, context['url'])
             data = DATA[category]['script'](parser=parser, category=category, session=self.session)
+            
+        data = data.strip()
         
         if not self.file_manager.is_exist(filename):
             self.file_manager.write(filename, data)
@@ -74,13 +67,12 @@ class Manager:
         if diff is None:
             return None
 
-        # write
+        # Writing
         self.file_manager.write(filename, data)
 
         return diff
     
     
     def format_new_wr(self, row: str):
-        print(row)
         discipline, time, player_name, country, *_ = row.strip().split(',')
-        return f"❗ 🎉   __**[{discipline}] {time}  ⏲️ NEW WR**__    🎉 ❗\n 🏆 {emoji_flags[country]}   {player_name} 🏆"
+        return f"🎉   __**[{discipline}] ⏲️  {time}  ⏲️  NEW WR**__    🎉\n 🏆  {emoji_flags[country]}   {player_name} 🏆"

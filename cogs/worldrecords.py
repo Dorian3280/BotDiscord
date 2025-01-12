@@ -67,16 +67,6 @@ class WorldRecords(commands.Cog, name="worldrecords"):
 
         for wr in chain(*new_wr.values()):
             return self.manager.format_new_wr(wr)
-
-
-    def check_options(command_name, *options):
-        match command_name:
-            case 'show':
-                if options[0] in ['byDate']:
-                    order = options[1] if options[1] in ['asc', 'desc'] else 'asc'
-                    return options[0], order
-        
-        return False
     
 
     async def send_response(self, ctx: Context, response, category, file=False):

@@ -1,5 +1,7 @@
 import os
 
+from classes.StringProcessor import from_csv_to_set
+
 class FileManager:
     def __init__(self, url: str):
         self.url = url
@@ -31,5 +33,7 @@ class FileManager:
 
         if data == old:
             return None
-
-        return list(set(data).difference(set(old)))
+        
+        old, data = from_csv_to_set(old), from_csv_to_set(data)
+        
+        return list(data.difference(old))
