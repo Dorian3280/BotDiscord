@@ -89,5 +89,5 @@ class Manager:
         
     
     def format_new_wr(self, row: str, category: str):
-        discipline, time, player_name, country, *_ = row.strip().split(',')
-        return f"## {category.title()}\n🎉   __**[{discipline}] ⏲️  {time}  ⏲️  NEW WR**__    🎉\n 🏆  {emoji_flags[country]}   {player_name} 🏆"
+        discipline, time, player_name, country, date = row.strip().split(',')
+        return f"## {category.title()}\n🎉   __**[{discipline}] ⏲️  {time}  ⏲️  {date}**__    🎉\n 🏆  {emoji_flags[country]}   {player_name} 🏆"
