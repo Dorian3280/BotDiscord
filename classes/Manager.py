@@ -1,10 +1,10 @@
 from requests import Session
-from itertools import groupby
+from itertools import groupby, chain
 
 from classes.DataManager import DATA
 from classes.UrlManager import url_request
 from classes.FileManager import FileManager
-from classes.StringProcessor import from_csv_to_table
+from classes.StringProcessor import from_csv_to_table, from_csv_to_set
 
 from medias.emoji_flags import emoji_flags
 
@@ -45,34 +45,49 @@ class Manager:
         return "\n\n".join([self.get_one(category) for category in categories])
     
 
-    def execute_one(self, category):
+    def extract_one(self, category):
         context = DATA[category]
-        print(category + ' ->\n... Executing')
-        filename = f"{category}.{self.config['extension_db_file']}"
 
         if 'context' in DATA[category].keys():
             data = DATA[category]['script'](session=self.session, context=DATA[category]['context'], base_url=context['url'])
         else:
             parser = url_request(self.session, context['url'])
             data = DATA[category]['script'](parser=parser, category=category, session=self.session)
-            
-        data = data.strip()
         
-        if not self.file_manager.is_exist(filename):
+        return data
+
+
+    def extract_new_wr(self, data, filename) -> list[str]:
+        old = self.file_manager.read(filename)
+        
+        return list(from_csv_to_set(data).difference(from_csv_to_set(old)))
+
+    
+    def launch(self, category):
+        filename = f"{category}.{self.config['extension_db_file']}"
+        
+        print('Executing ', category + '...')
+        data = self.extract_one(category)
+        
+        new_wr = self.extract_new_wr(data, filename)
+        
+        if not self.file_manager.is_exist(filename) or new_wr:
             self.file_manager.write(filename, data)
-            return None
-
-        diff = self.file_manager.test_if_equal(data, filename)
         
-        if diff is None:
-            return None
-
-        # Writing
-        self.file_manager.write(filename, data)
-
-        return diff
+        return new_wr
     
     
-    def format_new_wr(self, row: str):
+    def check_new_wr(self, categories: list) -> str:        
+        new_wr = {
+            category: self.launch(category)
+            for category in categories
+        }
+        print('Success')
+        
+        # Build the loop with good format, chain just here for the flat
+        return chain.from_iterable([self.format_new_wr(v, key) for v in values] for key, values in new_wr.items() if values is not None)
+        
+    
+    def format_new_wr(self, row: str, category: str):
         discipline, time, player_name, country, *_ = row.strip().split(',')
-        return f"🎉   __**[{discipline}] ⏲️  {time}  ⏲️  NEW WR**__    🎉\n 🏆  {emoji_flags[country]}   {player_name} 🏆"
+        return f"## {category.title()}\n🎉   __**[{discipline}] ⏲️  {time}  ⏲️  NEW WR**__    🎉\n 🏆  {emoji_flags[country]}   {player_name} 🏆"

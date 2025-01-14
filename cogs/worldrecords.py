@@ -54,19 +54,8 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         self.checking.start()
 
 
-    def check_wr(self) -> str:
-        new_wr = {
-            category: self.manager.execute_one(category)
-            for category in self.categories
-        }
-
-        if not any(new_wr.values()):
-            return 'No new world record'
-        
-        new_wr = {k: v for k, v in new_wr.items() if v is not None}
-
-        for wr in chain(*new_wr.values()):
-            return self.manager.format_new_wr(wr)
+    def manage_new_wr(self) -> str:
+        return self.manager.check_new_wr(self.categories)
     
 
     async def send_response(self, ctx: Context, response, category, file=False):
@@ -81,6 +70,7 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         description="Show database",
     )
     async def show(self, ctx: Context) -> None:
+        self.bot.logger.info(f"The user {ctx.author} ran !{ctx.command.name}")
         data = self.manager.get_all(self.categories)
         await ctx.send(file=File(io.StringIO(data), self.bot.config["show_database_filename"]))
 
@@ -90,15 +80,25 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         description="Checking if there are world records",
     )
     async def check(self, ctx: Context) -> None:
-        response = self.check_wr()
-        await ctx.send(response)
+        self.bot.logger.info(f"The user {ctx.author} ran !{ctx.command.name}")
+        for wr in self.manage_new_wr():
+            await ctx.send(wr)
 
 
     @tasks.loop(time=datetime.time(hour=12, tzinfo=ZoneInfo("Europe/Paris")))
     async def checking(self) -> None:
-        response = self.check_wr()
+        try:
+            new_wr = self.manage_new_wr()
+        except Exception as e:
+            self.bot.logger.error(f"Error when checking : {e}")
+        else:
+            nb_record = len(new_wr)
+            self.bot.logger.info(f"The daily checking went successfully with {nb_record if nb_record else 'no'} new record{'s' if nb_record > 1 else ''}")
+        
         channel = self.bot.get_channel(self.bot.config['channel_id_world_records'])
-        await channel.send(response)
+        
+        for wr in self.manage_new_wr():
+            await channel.send(wr)
         
     @checking.before_loop
     async def before_check(self):

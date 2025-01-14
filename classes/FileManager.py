@@ -28,12 +28,6 @@ class FileManager:
         return os.path.isfile(os.path.join(self.url, path))
     
     
-    def test_if_equal(self, data, filename):
-        old = self.read(filename)
-
-        if data == old:
-            return None
+    def is_different(self, data, old):
+        return data != old
         
-        old, data = from_csv_to_set(old), from_csv_to_set(data)
-        
-        return list(data.difference(old))
