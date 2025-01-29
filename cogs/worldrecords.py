@@ -55,7 +55,10 @@ class WorldRecords(commands.Cog, name="worldrecords"):
 
 
     def manage_new_wr(self) -> str:
-        return self.manager.check_new_wr(self.categories)
+        wr_list = [wr for wr in self.manager.check_new_wr(self.categories)]
+        print("Success")
+        
+        return wr_list
     
 
     async def send_response(self, ctx: Context, response, category, file=False):
@@ -80,25 +83,36 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         description="Checking if there are world records",
     )
     async def check(self, ctx: Context) -> None:
-        self.bot.logger.info(f"The user {ctx.author} ran !{ctx.command.name}")
-        for wr in self.manage_new_wr():
+        wr_list = self.manage_new_wr()
+        self.bot.logger.info(f"The user {ctx.author} ran !{ctx.command.name} with {len(wr_list)} new world record")
+        
+        if not wr_list:
+            await ctx.send("No new World record")
+        
+        for wr in wr_list:
             await ctx.send(wr)
 
 
     @tasks.loop(time=datetime.time(hour=12, tzinfo=ZoneInfo("Europe/Paris")))
     async def checking(self) -> None:
-        try:
-            new_wr = self.manage_new_wr()
-        except Exception as e:
-            self.bot.logger.error(f"Error when checking : {e}")
-        else:
-            nb_record = len(new_wr)
-            self.bot.logger.info(f"The daily checking went successfully with {nb_record if nb_record else 'no'} new record{'s' if nb_record > 1 else ''}")
         
         channel = self.bot.get_channel(self.bot.config['channel_id_world_records'])
         
-        for wr in self.manage_new_wr():
+        try:
+            wr_list = self.manage_new_wr()
+        except Exception as e:
+            self.bot.logger.error(f"Error during the daily checking : {e}")
+            return await channel.send("An error has occured during the daily checking")
+        
+        if wr_list:
+            self.bot.logger.info(f"The daily checking went successfully with {len(wr_list)} new record{'s' if len(wr_list) > 1 else ''}")
+        else: 
+            self.bot.logger.info(f"The daily checking went successfully without any new world record")
+        
+        for wr in wr_list:
             await channel.send(wr)
+        
+            
         
     @checking.before_loop
     async def before_check(self):

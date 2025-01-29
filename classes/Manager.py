@@ -82,7 +82,6 @@ class Manager:
             category: self.launch(category)
             for category in categories
         }
-        print('Success')
         
         # Build the loop with good format, chain just here for the flat
         return chain.from_iterable([self.format_new_wr(v, key) for v in values] for key, values in new_wr.items() if values is not None)
