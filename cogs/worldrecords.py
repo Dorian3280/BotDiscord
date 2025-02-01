@@ -84,7 +84,7 @@ class WorldRecords(commands.Cog, name="worldrecords"):
     )
     async def check(self, ctx: Context) -> None:
         wr_list = self.manage_new_wr()
-        self.bot.logger.info(f"The user {ctx.author} ran !{ctx.command.name} with {len(wr_list)} new world record")
+        self.bot.logger.info(f"The user {ctx.author} ran !{ctx.command.name} ({len(wr_list)} new world record)")
         
         if not wr_list:
             await ctx.send("No new World record")
