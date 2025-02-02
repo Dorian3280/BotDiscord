@@ -89,4 +89,4 @@ class Manager:
     
     def format_new_wr(self, row: str, category: str):
         discipline, time, player_name, country, date = row.strip().split(',')
-        return f"## :trophy: __**New {category.title()} World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name} {emoji_flags[country]}"
+        return f"## :trophy: __**New {category.title()} World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name} :{emoji_flags[country]}:"
