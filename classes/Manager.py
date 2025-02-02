@@ -6,7 +6,7 @@ from classes.UrlManager import url_request
 from classes.FileManager import FileManager
 from classes.StringProcessor import from_csv_to_table, from_csv_to_set
 
-from medias.emoji_flags import emoji_flags
+from medias.discord_emoji import *
 
 
 class Manager:
@@ -89,4 +89,4 @@ class Manager:
     
     def format_new_wr(self, row: str, category: str):
         discipline, time, player_name, country, date = row.strip().split(',')
-        return f"## {category.title()}\n🎉   __**[{discipline}] ⏲️  {time}  ⏲️  {date}**__    🎉\n 🏆  {emoji_flags[country]}   {player_name} 🏆"
+        return f"## :trophy: __**New {category.title()} World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name} {emoji_flags[country]}"
