@@ -34,7 +34,12 @@ def extract_athletics_wr(**kwargs) -> str:
             
             # Date
             date = format_str(tds[8].text())
-            date = datetime.strptime(date, "%d %b %Y").strftime("%d %B %Y")
+            for _format in ["%d %b %Y", "%d %B %Y"]:
+                try:
+                    date = datetime.strptime(date, _format).strftime("%d %b %Y")
+                    break
+                except ValueError:
+                    continue
             
             data += f'{discipline},{time},{player},{country},{date}\n'
         

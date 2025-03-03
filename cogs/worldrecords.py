@@ -106,13 +106,14 @@ class WorldRecords(commands.Cog, name="worldrecords"):
         
         if wr_list:
             self.bot.logger.info(f"The daily checking went successfully with {len(wr_list)} new record{'s' if len(wr_list) > 1 else ''}")
+            
+            for wr in wr_list:
+                await channel.send(wr)
+        
         else: 
             self.bot.logger.info(f"The daily checking went successfully without any new world record")
-        
-        for wr in wr_list:
-            await channel.send(wr)
-        
-            
+            await channel.send("No new world record for today 😢")
+    
         
     @checking.before_loop
     async def before_check(self):

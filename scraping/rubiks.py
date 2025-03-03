@@ -12,7 +12,7 @@ def extract_rubiks_wr(**kwargs) -> str:
     parser: HTMLParser = kwargs['parser']
     
     trs = parser.css('table tbody tr')[1:-1]
-    del trs[14:22]
+    del trs[14:21]
     
     data = []
     

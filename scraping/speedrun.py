@@ -23,6 +23,7 @@ def extract_speedrun_wr(**kwargs) -> str:
             country = format_str(tds[1].css_first('img').attrs["alt"].split(',')[-1])
         except:
             country = '-'
+        print(game, country)
         time = format_str(tds[3].text())
         
         # Date
