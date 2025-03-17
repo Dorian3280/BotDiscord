@@ -66,7 +66,7 @@ class Manager:
     def launch(self, category):
         filename = f"{category}.{self.config['extension_db_file']}"
         
-        print('Executing ', category + '...')
+        print(f'Executing {category}...')
         data = self.extract_one(category)
         
         new_wr = self.extract_new_wr(data, filename)
