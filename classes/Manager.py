@@ -10,14 +10,14 @@ from medias.discord_emoji import *
 
 
 class Manager:
-    def __init__(self, datablase_url, config):
+    def __init__(self, datablase_url, bot):
         self.session = Session()
         self.file_manager = FileManager(datablase_url)
-        self.config = config
+        self.bot = bot
 
 
     def get_one(self, category: str, sorting=False):
-        filename = f"{category}.{self.config['extension_db_file']}"
+        filename = f"{category}.{self.bot.config['extension_db_file']}"
         
         data = self.file_manager.read(filename)
         header, body = self.format_data(data, DATA[category]['header'])
@@ -64,7 +64,7 @@ class Manager:
 
     
     def launch(self, category):
-        filename = f"{category}.{self.config['extension_db_file']}"
+        filename = f"{category}.{self.bot.config['extension_db_file']}"
         
         print(f'Executing {category}...')
         data = self.extract_one(category)
@@ -89,4 +89,7 @@ class Manager:
     
     def format_new_wr(self, row: str, category: str):
         discipline, time, player_name, country, date = row.strip().split(',')
-        return f"## :trophy: __**New {category.title()} World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name} :{emoji_flags[country]}:"
+        if country not in emoji_flags:
+            self.bot.logger.error(f"Country not found in flag media: {country}")
+        flag = f" :{emoji_flags[country]}:" if country in emoji_flags else ""
+        return f"## :trophy: __**New {category.title()} World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name}{flag}"

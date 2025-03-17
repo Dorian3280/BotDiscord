@@ -13,7 +13,7 @@ from classes.Manager import Manager
 class WorldRecords(commands.Cog, name="worldrecords"):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-        self.manager = Manager(f"{self.bot.path}/database", bot.config)
+        self.manager = Manager(f"{self.bot.path}/database", bot)
 
         self.categories = [
             "athletics",
