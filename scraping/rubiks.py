@@ -12,25 +12,27 @@ def extract_rubiks_wr(**kwargs) -> str:
     parser: HTMLParser = kwargs['parser']
     
     trs = parser.css('table tbody tr')[1:-1]
-    del trs[14:21]
     
     data = []
+    b = False
     
     for i, tr in enumerate(trs):
-        modifier = i%2
         tds = tr.css('td')
         
         # Discipline
-        if not modifier: discipline = format_long_str(tds[0].text())
+        if not b:
+            discipline = format_long_str(tds[0].text())
+            rowspan = int(tds[0].attributes["rowspan"])
+            b = True
         
-        time = format_str(tds[2-modifier].text())
-        player = format_str(tds[3-modifier].text())
+        time = format_str(tds[2-b].text())
+        player = format_str(tds[3-b].text())
         player = re.sub(r'\s(\(.+\))', '', player)
         player = re.sub(r'\s{2,}', ' ', player)
-        country = tds[3-modifier].css_first("a:has(img)").attrs["title"]
+        country = tds[3-b].css_first("a:has(img)").attrs["title"]
         
         # Date
-        date = format_str(tds[4-modifier].text())
+        date = format_str(tds[4-b].text())
         date = re.search(regex, date)
         
         if date:
@@ -39,6 +41,8 @@ def extract_rubiks_wr(**kwargs) -> str:
         else:
             date = '-'
         
+        rowspan -= 1
+        b = bool(rowspan)
         data.append(f'{discipline},{time},{player},{country},{date}\n')
         
     data[0:2], data[2:4] = data[2:4], data[0:2]
