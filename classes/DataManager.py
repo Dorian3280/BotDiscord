@@ -17,7 +17,7 @@ DATA = {
     },
     'swimming': {
                   "script": extract_swimming_wr,
-                  "header": "***Long course 50m (Men),Short course 25m (Men),Long course 50m (Women),Short course 25m (Women)\ndiscipline,time,player,country,date",
+                  "header": "***Long course 50m (Men),Long course 50m (Women),Short course 25m (Men),Short course 25m (Women)\ndiscipline,time,player,country,date",
                   "url": "https://en.wikipedia.org/wiki/List_of_world_records_in_swimming",
     },
     'speedrun': {

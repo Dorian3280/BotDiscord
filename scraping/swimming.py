@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from selectolax.parser import HTMLParser
 
@@ -10,7 +11,13 @@ def extract_swimming_wr(**kwargs) -> str:
 
     data = ''
     
-    for h3 in parser.css(f"h3[id=Men], h3[id=Men_2], h3[id=Women], h3[id=Women_2]"):
+    for h3 in parser.css(f"h3[id=Men], h3[id=Women], h3[id=Men_2], h3[id=Women_2]"):
+
+        gender = h3.text()
+        if "Men" in gender:
+            type_ = format_str(h3.parent.prev.prev.css_first("h2").text())
+            type_ = type_[type_.find('(') : type_.find(')')+1]
+
         for tr in h3.parent.next.next.css('table tbody tr:not(:first-child)'):
             tds = tr.css('td')
             
@@ -31,7 +38,7 @@ def extract_swimming_wr(**kwargs) -> str:
             date = format_str(tds[5].text())
             date = datetime.strptime(date, "%d %B %Y").strftime("%d %B %Y")
             
-            data += f'{discipline},{time},{player},{country},{date}\n'
+            data += f'{gender} {type_} {discipline},{time},{player},{country},{date}\n'
         
         data += '--\n'
     

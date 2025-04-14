@@ -92,4 +92,4 @@ class Manager:
         if country not in emoji_flags:
             self.bot.logger.error(f"Country not found in flag media: {country}")
         flag = f" :{emoji_flags[country]}:" if country in emoji_flags else ""
-        return f"## :trophy: __**New {category.title()} World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name}{flag}"
+        return f"## :trophy: __**{category.title()} New World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name}{flag}"

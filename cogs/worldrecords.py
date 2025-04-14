@@ -56,7 +56,6 @@ class WorldRecords(commands.Cog, name="worldrecords"):
 
     def manage_new_wr(self) -> str:
         wr_list = [wr for wr in self.manager.check_new_wr(self.categories)]
-        print("Success")
         
         return wr_list
     
@@ -80,10 +79,11 @@ class WorldRecords(commands.Cog, name="worldrecords"):
 
     @commands.hybrid_command(
         name="check",
-        description="Checking if there are world records",
+        description="Checking if there are new world records",
     )
     async def check(self, ctx: Context) -> None:
         wr_list = self.manage_new_wr()
+        print("Success")
         self.bot.logger.info(f"The user {ctx.author} ran !{ctx.command.name} ({len(wr_list)} new world record)")
         
         if not wr_list:
