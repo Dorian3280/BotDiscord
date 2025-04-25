@@ -28,7 +28,7 @@ def extract_speedrun_wr(**kwargs) -> str:
         
         # Date
         json = url_request(session, base_url + context[game]['history_api'], json=True)
-        date = datetime.fromtimestamp(json["runList"][-1]["date"]).strftime("%d %B %Y")
+        date = datetime.fromtimestamp(json["runList"][-1]["date"]).strftime("%d %b %Y")
     
         data += f'{game},{time},{player},{country},{date}\n'
         

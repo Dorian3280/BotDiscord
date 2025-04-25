@@ -36,7 +36,7 @@ def extract_swimming_wr(**kwargs) -> str:
             
             # Date
             date = format_str(tds[5].text())
-            date = datetime.strptime(date, "%d %B %Y").strftime("%d %B %Y")
+            date = datetime.strptime(date, "%d %B %Y").strftime("%d %b %Y")
             
             data += f'{gender} {type_} {discipline},{time},{player},{country},{date}\n'
         
