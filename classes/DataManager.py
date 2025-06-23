@@ -25,6 +25,14 @@ DATA = {
                   "header": "***Game\ngame,player,country,time,date",
                   "url": "https://www.speedrun.com",
                   "context": {
+                        'GeoGuessr 25K': {
+                            "leaderboard": "/fr-FR/geoguessr?h=25K-acw&x=n2ynny7k-5lyx7zkn.z19ngj4q",
+                            "history_api": "/api/v2/GetGameLeaderboard2?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6Im4yeW5ueTdrIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6Im0xbW5qMmpkIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiI1bHl4N3prbiIsInZhbHVlSWRzIjpbInoxOW5najRxIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzUwNDU3NzcyfQ"
+                        },
+                        'GeoGuessr 100K': {
+                            "leaderboard": "/fr-FR/geoguessr?h=100K-acw&x=7kjlejz2-5lyx7zkn.z19ngj4q",
+                            "history_api": "/api/v2/GetGameLeaderboard2?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IjdramxlanoyIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6Im0xbW5qMmpkIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiI1bHl4N3prbiIsInZhbHVlSWRzIjpbInoxOW5najRxIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzUwNDU3NzcyfQ"
+                        },
                         'Chained Together': {
                             "leaderboard": "/fr-FR/Chained_Together?h=any-nowings-1-player-restricted-v1-7-3&x=q2563nyk-9l7yyj9l.qzn4yekq-r8rrrvw8.q657gknl-jlzpp4xn.qke8609q",
                             "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6InEyNTYzbnlrIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6IjQ2d3J3NzcxIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiI5bDd5eWo5bCIsInZhbHVlSWRzIjpbInF6bjR5ZWtxIl19LHsidmFyaWFibGVJZCI6InI4cnJydnc4IiwidmFsdWVJZHMiOlsicTY1N2drbmwiXX0seyJ2YXJpYWJsZUlkIjoiamx6cHA0eG4iLCJ2YWx1ZUlkcyI6WyJxa2U4NjA5cSJdfV0sInZpZGVvIjowfSwicGFnZSI6MSwidmFyeSI6MTczNDYzNTgyNX0"

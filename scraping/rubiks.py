@@ -4,7 +4,7 @@ from selectolax.parser import HTMLParser
 
 from classes.StringProcessor import format_long_str, format_str
 
-regex = re.compile(r'(\d{4})\s\((\d+)(?:[-–]\d+)?\s(\w+)\)?', re.I)
+regex = re.compile(r'(\d{4})\s\((\d+)(?:\s?[-–]\s?\d+)?\s(\w+)\)?', re.I)
 
 def extract_rubiks_wr(**kwargs) -> str:
     

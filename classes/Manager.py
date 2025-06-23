@@ -57,7 +57,7 @@ class Manager:
         return data
 
 
-    def extract_new_wr(self, data, filename) -> list[str]:
+    def extract_new_wr(self, data: str, filename) -> list[str]:
         old = self.file_manager.read(filename)
         
         return list(from_csv_to_set(data).difference(from_csv_to_set(old)))
@@ -92,4 +92,10 @@ class Manager:
         if country not in emoji_flags:
             self.bot.logger.error(f"Country not found in flag media: {country}")
         flag = f" :{emoji_flags[country]}:" if country in emoji_flags else ""
-        return f"## :trophy: __**{category.title()} New World Record**__ :trophy: \n# **:{category_emoji[category]}: {discipline}**\n:timer:  {time}\n:calendar: {date}\n:first_place: {player_name}{flag}"
+        return (
+            f"## :trophy: __**{category.title()} New World Record**__ :trophy: \n"
+            f"# **{category_emoji[category]} {discipline}**\n"
+            f":first_place: {player_name}{flag}\n"
+            f":timer:  {time}\n"
+            f":calendar: {date}\n"
+        )
