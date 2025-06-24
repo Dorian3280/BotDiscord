@@ -28,8 +28,8 @@ def extract_speedrun_wr(**kwargs) -> str:
         
         # Date
         json = url_request(session, base_url + context[game]['history_api'], json=True)
-        date = datetime.fromtimestamp(json["runList"][-1]["date"]).strftime("%d %b %Y")
-    
+        location = 0 if "GeoGuessr" in game else -1
+        date = datetime.fromtimestamp(json["runList"][location]["date"]).strftime("%d %b %Y")
         data += f'{game},{time},{player},{country},{date}\n'
         
     return data
