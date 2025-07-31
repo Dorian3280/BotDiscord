@@ -26,7 +26,7 @@ def extract_athletics_wr(**kwargs) -> str:
                 discipline = format_long_str(tds[0].text(separator=" "))
                 discipline = re.sub(r'\s+', ' ', discipline)
             
-            if "background" not in tds[1].attributes.get("style", ''):
+            if "background" not in tds[1].attributes.get("style", '') and not tds[1].parent.attributes.get("bgcolor", False):
                 
                 # Time
                 time = format_str(tds[1-rowspan_bool].text())
@@ -36,6 +36,7 @@ def extract_athletics_wr(**kwargs) -> str:
                 player = format_str(players[0].text()) + (" ..." if len(players) > 1 else '')
                 
                 # Country
+                # print(player)
                 country = tds[7-rowspan_bool].css_first("a").attrs["title"]
                 
                 # Date
