@@ -16,7 +16,7 @@ class Manager:
         self.bot = bot
 
 
-    def get_one(self, category: str, sorting=False):
+    def get_one(self, category: str):
         filename = f"{category}.{self.bot.config['extension_db_file']}"
         
         data = self.file_manager.read(filename)
@@ -43,36 +43,30 @@ class Manager:
 
     def get_all(self, categories: list[str]):
         return "\n\n".join([self.get_one(category) for category in categories])
-    
 
-    def extract_one(self, category):
-        context = DATA[category]
 
-        if 'context' in DATA[category].keys():
-            data = DATA[category]['script'](session=self.session, context=DATA[category]['context'], base_url=context['url'])
-        else:
-            parser = url_request(self.session, context['url'])
-            data = DATA[category]['script'](parser=parser, category=category, session=self.session)
+    def extract_new_wr(self, old: list[str], new: list[str]) -> list[str]:
+        time_new = [row.split(',')[1] for row in new if len(row) > 5]
+        time_old = [row.split(',')[1] for row in old if len(row) > 5]
+        ind = [i for i, (a, b) in enumerate(zip(time_new, time_old)) if a != b]
         
-        return data
-
-
-    def extract_new_wr(self, data: str, filename) -> list[str]:
-        old = self.file_manager.read(filename)
-        
-        return list(from_csv_to_set(data).difference(from_csv_to_set(old)))
+        return [new[i] for i in ind]
 
     
     def launch(self, category):
         filename = f"{category}.{self.bot.config['extension_db_file']}"
         
-        print(f'Executing {category}...')
-        data = self.extract_one(category)
+        print(f'\nExtracting {category.title()}')
+        new = DATA[category]['script'](session=self.session, category=category, context=DATA[category]["context"])
+        old = self.file_manager.read(filename)
         
-        new_wr = self.extract_new_wr(data, filename)
-        
+        # Comparing
+        new_formatted = [row for row in new.split('\n') if len(row) > 5]
+        old_formatted = [row for row in old.split('\n') if len(row) > 5]
+        new_wr = self.extract_new_wr(old_formatted, new_formatted)
+    
         if not self.file_manager.is_exist(filename) or new_wr:
-            self.file_manager.write(filename, data)
+            self.file_manager.write(filename, new)
         
         return new_wr
     
@@ -89,9 +83,12 @@ class Manager:
     
     def format_new_wr(self, row: str, category: str):
         discipline, time, player_name, country, date = row.strip().split(',')
+        
         if country not in emoji_flags:
             self.bot.logger.error(f"Country not found in flag media: {country}")
+            
         flag = f" :{emoji_flags[country]}:" if country in emoji_flags else ""
+        
         return (
             f"## :trophy: __**{category.title()} New World Record**__ :trophy: \n"
             f"# **{category_emoji[category]} {discipline}**\n"

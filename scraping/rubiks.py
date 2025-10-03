@@ -1,68 +1,36 @@
 import re
+import requests
 from datetime import datetime
-from selectolax.parser import HTMLParser
 
-from classes.StringProcessor import format_long_str, format_str
+from classes.UrlManager import url_request
 
 regex = re.compile(r'(\d{4})\s\((\d+)(?:\s?[-–]\s?\d+)?\s(\w+)\)?', re.I)
-
+    
 def extract_rubiks_wr(**kwargs) -> str:
+    context = kwargs['context']
+    session: requests.Session = kwargs['session']
+    session.headers.update(context['headers'])
     
-    parser: HTMLParser = kwargs['parser']
-    
-    trs = parser.css('table tbody tr')[1:-1]
-    
+    _json = url_request(session, context['url'], json=True)
+    session.headers.update(requests.sessions.default_headers())
     data = []
-    rowspan_bool = False
-    player_rowspan_bool = False
-    type_count = 0
     
-    for i, tr in enumerate(trs):
-        tds = tr.css('td')
-
-        # Discipline
-        if not rowspan_bool:
-            rowspan = int(tds[0].attributes["rowspan"])
-            discipline = format_long_str(tds[0].text())
-
-        if not type_count:
-            type_count = int(tds[1 - rowspan_bool].attributes.get("rowspan", 0))
-            type_ = format_str(tds[1 - rowspan_bool].text())
+    for row in _json["rows"]:
+        if row["event_name"] in["3x3x3 Fewest Moves",  "3x3x3 Multi-Blind"]: continue
         
-            time = format_str(tds[2-rowspan_bool].text())
-            
-            if not player_rowspan_bool:
-                player = format_str(tds[3-rowspan_bool].text())
-                player = re.sub(r'\s(\(.+\))', '', player)
-                player = re.sub(r'\s{2,}', ' ', player)
-                country = tds[3-rowspan_bool].css_first("a").attrs["title"]
-            
-            # Date
-            date = format_str(tds[4-rowspan_bool-player_rowspan_bool].text())
-            date = re.search(regex, date)
-            
-            if date:
-                date = f"{date.group(2)} {date.group(3)} {date.group(1)}"
-                date = datetime.strptime(date, "%d %B %Y").strftime("%d %b %Y")
-            else:
-                date = '-'
-            
-            data.append(f'{type_} {discipline},{time},{player},{country},{date}\n')
+        discipline = f'{row["type"].title()} {row["event_name"]}'
         
-            if "rowspan" in tds[3-rowspan_bool].attributes:
-                player_rowspan_bool = True
+        time = row["best"] if row["type"] == "single" else row["average"]
+        time = f'''{f"{time//6000}:" if time>6000 else ''}{time//100%60:02d}.{time%100:02d}'''.lstrip('0')
+        if time.startswith("."):
+            time = "0" + time
+            
+        athlete = row["person_name"]
+        country = row["country_name"]
+        date = datetime.strptime(row["start_date"], "%Y-%m-%d").strftime("%d %b %Y")
         
-        if type_count:
-            type_count -= 1
-
-        rowspan -= 1
-        rowspan_bool = bool(rowspan)
-
-        if not rowspan:
-            player_rowspan_bool = False
-        
-    data[0:2], data[2:4] = data[2:4], data[0:2]
-    data_single = ''.join(data[::2])
-    data_average = ''.join(data[1::2])
+        data.append(f'{discipline},{time},{athlete},{country},{date}')
     
-    return data_single + '--\n' + data_average
+    data = data[::2] + ['--'] + data[1::2]
+    
+    return '\n'.join(data)

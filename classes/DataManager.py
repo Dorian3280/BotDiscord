@@ -6,73 +6,95 @@ from scraping.speedrun import extract_speedrun_wr
 
 DATA = {
     'athletics': {
-                  "script": extract_athletics_wr,
-                  "header": "***Men,Women\ndiscipline,time,player,country,date",
-                  "url": "https://en.wikipedia.org/wiki/List_of_world_records_in_athletics",
+                "script": extract_athletics_wr,
+                "header": "***Men,Women\ndiscipline,time,player,country,date",
+                "context": {
+                    "url": "https://etusuora.com/en/athletics/world-records",
+                }
     },
     'rubiks': {
-                  "script": extract_rubiks_wr,
-                  "header": "***Single,Average\ndiscipline,time,player,country,date",
-                  "url": "https://en.wikipedia.org/wiki/List_of_world_records_in_speedcubing",
+                "script": extract_rubiks_wr,
+                "header": "***Single,Average\ndiscipline,time,player,country,date",
+                "context": {
+                    "url": "https://www.worldcubeassociation.org/results/records?show=mixed",
+                    "headers": {
+                        "Accept": "application/json",
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0 Safari/537.36",
+                        "Referer": "https://www.worldcubeassociation.org/results/records?show=mixed",
+                        "Cookie": "sessionid=_ga=GA1.1.2080631853.1759358121; _WcaOnRails_session=ZMWiialo2UEmJgBr16E9y7L4pY1rko5v%2F1SVDd45iPFHEME5FrXpO2FbhPGY6CZlUnf8y7vUnVcIZdL4oVKE9QRjCikvRQsqNU2fjEQDl%2BFhWs%2FbCP14N5oNcrAT3KmC1ICf1sU7r41nMiX1oVDmQAIsE0N5fvIkIvVXDmN5LcoyBMBsuB5YjyoR5bi0FAdTMwHdigswoI9XgqkJNmkukLM7zQHXlqcEqpxAxLwHwfSO8OzTNGZAa%2FfXrW7fLukzIJ3gnHPvTavo7XCC2kPmiReiByN40zvak87L%2F9nkw%2FSQ329u9P9hcP%2B12eMKTs235g2yOtCq9b55WtRnLxi8xExQrROG25%2FDhA8AeDuTKDBNe71D9138VfoBdIaZgw45%2F%2Bw1Y4AR0A%2FWH9s%3D--LDxfFbPkiQaq9tGi--w7EAmisvSFe2eMyZRXGi4w%3D%3D; _ga_QB1H9R123K=GS2.1.s1759471660$o5$g1$t1759473002$j60$l0$h0; csrftoken=DT5jvTzJUAHN00BMuEGmcRooByrh4gWHVnAD9c5_ap0C_O5UpO9w2vme4b7feiY1qrPj-vAaMRqqRcfbfyEwfg; autre=valeur",  # colle la valeur exacte depuis ton navigateur
+                    }
+                }
     },
     'swimming': {
-                  "script": extract_swimming_wr,
-                  "header": "***Long course 50m (Men),Long course 50m (Women),Short course 25m (Men),Short course 25m (Women)\ndiscipline,time,player,country,date",
-                  "url": "https://en.wikipedia.org/wiki/List_of_world_records_in_swimming",
+                "script": extract_swimming_wr,
+                "header": "***Long track 50m (Men),Long track 50m (Women),Short track 25m (Men),Short track 25m (Women)\ndiscipline,time,player,country,date",
+                "context" : {
+                    "url": "https://api.worldaquatics.com/fina/records/SW?recordCode=WR&gender={gender}&pool={length}",
+                    "gender": ["M", "F"],
+                    "length": ["LCM", "SCM"],
+                    "meanings": {
+                        "M": "Men",
+                        "F": "Women",
+                        "LCM": "50m pool",
+                        "SCM": "25m pool",
+                    }
+                }
     },
     'speedrun': {
-                  "script": extract_speedrun_wr,
-                  "header": "***Game\ngame,player,country,time,date",
-                  "url": "https://www.speedrun.com",
-                  "context": {
-                        'GeoGuessr 25K': {
-                            "leaderboard": "/fr-FR/geoguessr?h=25K-acw&x=n2ynny7k-5lyx7zkn.z19ngj4q",
-                            "history_api": "/api/v2/GetGameLeaderboard2?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6Im4yeW5ueTdrIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6Im0xbW5qMmpkIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiI1bHl4N3prbiIsInZhbHVlSWRzIjpbInoxOW5najRxIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzUwNDU3NzcyfQ"
-                        },
-                        'GeoGuessr 100K': {
-                            "leaderboard": "/fr-FR/geoguessr?h=100K-acw&x=7kjlejz2-5lyx7zkn.z19ngj4q",
-                            "history_api": "/api/v2/GetGameLeaderboard2?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IjdramxlanoyIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6Im0xbW5qMmpkIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiI1bHl4N3prbiIsInZhbHVlSWRzIjpbInoxOW5najRxIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzUwNDU3NzcyfQ"
-                        },
-                        'Chained Together': {
-                            "leaderboard": "/fr-FR/Chained_Together?h=any-nowings-1-player-restricted-v1-7-3&x=q2563nyk-9l7yyj9l.qzn4yekq-r8rrrvw8.q657gknl-jlzpp4xn.qke8609q",
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6InEyNTYzbnlrIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6IjQ2d3J3NzcxIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiI5bDd5eWo5bCIsInZhbHVlSWRzIjpbInF6bjR5ZWtxIl19LHsidmFyaWFibGVJZCI6InI4cnJydnc4IiwidmFsdWVJZHMiOlsicTY1N2drbmwiXX0seyJ2YXJpYWJsZUlkIjoiamx6cHA0eG4iLCJ2YWx1ZUlkcyI6WyJxa2U4NjA5cSJdfV0sInZpZGVvIjowfSwicGFnZSI6MSwidmFyeSI6MTczNDYzNTgyNX0"
-                        },
-                        'Dark Souls 3 Any%': {
-                            "leaderboard": '/fr-FR/darksouls3?h=Any&x=n2y143z2',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6Im4yeTE0M3oyIiwiZW11bGF0b3IiOjEsImdhbWVJZCI6Ims2cWcweGRnIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOltdLCJ2aWRlbyI6MH0sInBhZ2UiOjEsInZhcnkiOjE3MzQ3NDM0NDR9"
-                        },
-                        'Dark Souls 3 All Bosses': {
-                            "leaderboard": '/fr-FR/darksouls3?h=All_Bosses-Restricted&x=7kjz1ond-r8reg92l.12vved7q',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6Ijdranoxb25kIiwiZW11bGF0b3IiOjEsImdhbWVJZCI6Ims2cWcweGRnIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiJyOHJlZzkybCIsInZhbHVlSWRzIjpbIjEydnZlZDdxIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzM0NzQzNDQ0fQ"
-                        },
-                        'Super Mario Bros': {
-                            "leaderboard": '/fr-FR/smb1?h=Any-NTSC&x=w20p0zkn-onvvdymn.013zwgxq',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IncyMHAwemtuIiwiZW11bGF0b3IiOjEsImdhbWVJZCI6Im9tMW0zNjI1Iiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjAsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiJvbnZ2ZHltbiIsInZhbHVlSWRzIjpbIjAxM3p3Z3hxIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzM0NzUxNjU3fQ"
-                        },
-                        'Celeste': {
-                            "leaderboard": '/fr-FR/celeste?h=Any&x=7kjpl1gk',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IjdranBsMWdrIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6Im8xeTlqOXY2Iiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOltdLCJ2aWRlbyI6MH0sInBhZ2UiOjEsInZhcnkiOjE3MzQ3MTY1NTN9"
-                        },
-                        'Portal Out of Bounds': {
-                            "leaderboard": '/fr-FR/portal?h=Out_of_Bounds-PC&x=lvdowokp-kn0mz7ol.jq6nxjnl',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6Imx2ZG93b2twIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6IjRwZDBuMzFlIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjAsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiJrbjBtejdvbCIsInZhbHVlSWRzIjpbImpxNm54am5sIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzM0NzY4MjA1fQ"
-                        },
-                        'Portal Inbounds': {
-                            "leaderboard": '/fr-FR/portal?h=Inbounds-PC&x=7wkp6v2r-kn0mz7ol.jq6nxjnl',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6Ijd3a3A2djJyIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6IjRwZDBuMzFlIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjAsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiJrbjBtejdvbCIsInZhbHVlSWRzIjpbImpxNm54am5sIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzM0NzY4MjA1fQ"
-                        },
-                        'Portal Inbounds no SLA': {
-                            "leaderboard": '/fr-FR/portal?h=Inbounds_No_SLA-PC-Legacy&x=n2yq98ko-kn0mz7ol.jq6nxjnl-ql61qmv8.jqz97g41',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6Im4yeXE5OGtvIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6IjRwZDBuMzFlIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjAsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiJrbjBtejdvbCIsInZhbHVlSWRzIjpbImpxNm54am5sIl19LHsidmFyaWFibGVJZCI6InFsNjFxbXY4IiwidmFsdWVJZHMiOlsianF6OTdnNDEiXX1dLCJ2aWRlbyI6MH0sInBhZ2UiOjEsInZhcnkiOjE3MzQ3NjgyMDV9"
-                        },
-                        'Portal Glitchless': {
-                            "leaderboard": '/fr-FR/portal?h=Glitchless-PC&x=wk6pexd1-kn0mz7ol.jq6nxjnl',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IndrNnBleGQxIiwiZW11bGF0b3IiOjAsImdhbWVJZCI6IjRwZDBuMzFlIiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjAsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOlt7InZhcmlhYmxlSWQiOiJrbjBtejdvbCIsInZhbHVlSWRzIjpbImpxNm54am5sIl19XSwidmlkZW8iOjB9LCJwYWdlIjoxLCJ2YXJ5IjoxNzM0NzY4MjA1fQ"
-                        },
-                        'Get To Work': {
-                            "leaderboard": '/fr-FR/Get_to_Work?h=glitchless&x=5dww54gd',
-                            "history_api": "/api/v2/GetGameRecordHistory?_r=eyJwYXJhbXMiOnsiY2F0ZWdvcnlJZCI6IjVkd3c1NGdkIiwiZW11bGF0b3IiOjEsImdhbWVJZCI6ImoxbjRyMHk2Iiwib2Jzb2xldGUiOjAsInBsYXRmb3JtSWRzIjpbXSwicmVnaW9uSWRzIjpbXSwidGltZXIiOjIsInZlcmlmaWVkIjoxLCJ2YWx1ZXMiOltdLCJ2aWRlbyI6MH0sInBhZ2UiOjEsInZhcnkiOjE3MzYyODk2MzZ9"
-                        },
+        "script": extract_speedrun_wr,
+        "header": "***Game\ngame,player,country,time,date",
+        "context": {
+                    "url": "https://www.speedrun.com/api/v1/games/{}/records?top=1&scope=full-game",
+                    "games": 
+                        [
+                            {
+                                "game": "GeoGuessr",
+                                "id": "m1mnj2jd",
+                                "categories": [
+                                { "name": "25K", "id": "n2ynny7k" },
+                                { "name": "100K", "id": "7kjlejz2" }
+                                ]
+                            },
+                            {
+                                "game": "Chained Together",
+                                "id": "46wrw771",
+                                "categories": [
+                                { "name": "Any%", "id": "q2563nyk" }
+                                ]
+                            },
+                            {
+                                "game": "Dark Souls 3",
+                                "id": "k6qg0xdg",
+                                "categories": [
+                                { "name": "Any%", "id": "n2y143z2" },
+                                { "name": "All Bosses", "id": "7kjz1ond" }
+                                ]
+                            },
+                            {
+                                "game": "Super Mario Bros",
+                                "id": "om1m3625",
+                                "categories": [
+                                { "name": "Any%", "id": "w20p0zkn" }
+                                ]
+                            },
+                            {
+                                "game": "Celeste",
+                                "id": "o1y9j9v6",
+                                "categories": [
+                                { "name": "Any%", "id": "7kjpl1gk" }
+                                ]
+                            },
+                            {
+                                "game": "Portal",
+                                "id": "4pd0n31e",
+                                "categories": [
+                                { "name": "Out of Bounds", "id": "lvdowokp" },
+                                { "name": "Inbounds", "id": "7wkp6v2r" },
+                                { "name": "Inbounds no SLA", "id": "n2yq98ko" },
+                                { "name": "Glitchless", "id": "wk6pexd1" }
+                                ]
+                            }
+                        ]
                     }
-    }
+                }
 }

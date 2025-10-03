@@ -1,45 +1,36 @@
-import re
+from requests import Session
 from datetime import datetime
 from selectolax.parser import HTMLParser
+from classes.UrlManager import url_request
 
 from classes.StringProcessor import format_long_str, format_str
 
 
 def extract_swimming_wr(**kwargs) -> str:
     
-    parser: HTMLParser = kwargs['parser']
+    session: Session = kwargs['session']
+    context: list = kwargs['context']
+    url = context['url']
 
     data = ''
     
-    for h3 in parser.css(f"h3[id=Men], h3[id=Women], h3[id=Men_2], h3[id=Women_2]"):
-
-        gender = h3.text()
-        if "Men" in gender:
-            type_ = format_str(h3.parent.prev.prev.css_first("h2").text())
-            type_ = type_[type_.find('(') : type_.find(')')+1]
-
-        for tr in h3.parent.next.next.css('table tbody tr:not(:first-child)'):
-            tds = tr.css('td')
+    for _length in context["length"]:
+        for _gender in context["gender"]:
             
-            # Discipline
-            discipline = format_long_str(tds[0].text(separator=" "))
+            _data = url_request(session, url.format(gender=_gender, length=_length), json=True)
             
-            # Time
-            time = format_str(tds[1].text())
-            
-            # Player
-            players = tds[3].css('a')
-            player = format_str(players[0].text()) + (" ..." if len(players) > 1 else '')
-            
-            # Country
-            country = format_str(tds[4].text())
-            
-            # Date
-            date = format_str(tds[5].text())
-            date = datetime.strptime(date, "%d %B %Y").strftime("%d %b %Y")
-            
-            data += f'{gender} {type_} {discipline},{time},{player},{country},{date}\n'
+            for record in _data["records"]:
+                discipline = f'({context["meanings"][_length]}) {record["eventDisciplineName"]}'
+                
+                time = record["timeFormatted"]
+                athlete = record["fullName"].title()
+                country = record["nationalityName"]
+                
+                # Date
+                date = datetime.fromisoformat(record["recordUpdated"][:-1]).strftime("%d %b %Y")
+                
+                data += f'{discipline},{time},{athlete},{country},{date}\n'
         
-        data += '--\n'
+            data += '--\n'
     
     return data

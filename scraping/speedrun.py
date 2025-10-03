@@ -9,27 +9,25 @@ from classes.UrlManager import url_request
 def extract_speedrun_wr(**kwargs) -> str:
     
     session: Session = kwargs['session']
-    context: dict = kwargs['context']
-    base_url = kwargs['base_url']
-    
+    context: list = kwargs['context']
+    url = context['url']
     data = ''
     
-    for game in context:
-        print(game)
-        parser: HTMLParser = url_request(session, base_url + context[game]['leaderboard'])
+    for game in context["games"]:
+        print(game["game"])
+        _data = url_request(session, url.format(game["id"]), json=True)["data"]
         
-        tds = parser.css('table tbody tr:first-child td')
-        player = format_str(tds[1].text())
-        try:
-            country = format_str(tds[1].css_first('img').attrs["alt"].split(',')[-1])
-        except:
-            country = '-'
-        time = format_str(tds[3].text())
-        
-        # Date
-        json = url_request(session, base_url + context[game]['history_api'], json=True)
-        location = 0 if "GeoGuessr" in game else -1
-        date = datetime.fromtimestamp(json["runList"][location]["date"]).strftime("%d %b %Y")
-        data += f'{game},{time},{player},{country},{date}\n'
+        for category in game["categories"]:
+            ind = next((i for i, g in enumerate(_data) if g["category"] == category["id"]), -1)
+            time = _data[ind]["runs"][0]["run"]["times"]["primary"][2:].lower()
+            athlete_data = url_request(session, _data[ind]["runs"][0]["run"]["players"][0]["uri"], json=True)
+            athlete = athlete_data["data"]["names"]["international"]
+            try:
+                country = athlete_data["data"]["location"]["country"]["names"]["international"]
+            except TypeError:
+                country = "-"
+            date = datetime.strptime(_data[ind]["runs"][0]["run"]["date"], "%Y-%m-%d").strftime("%d %b %Y")
+            
+            data += f'{game["game"]} {category["name"]},{time},{athlete},{country},{date}\n'
         
     return data
